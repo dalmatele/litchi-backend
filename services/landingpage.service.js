@@ -3,6 +3,7 @@
 const DbService = require("moleculer-db");
 const MongooseAdapter = require("moleculer-db-adapter-mongoose");
 const LandingPage = require("../models/landingpage.model");
+const {MoleculerError} = require("moleculer").Errors;
 
 // const ApiGateway = require("moleculer-web");
 module.exports = {
@@ -39,14 +40,25 @@ module.exports = {
         },
         update: {
             rest: {
-                method: "POST",
-                path: "/:id"
+                method: "POST",                
             },
             params: {
-                headerContent: "string"
+                id: "string",
+                headerScript: {type: "string", optional: true},
+                bodyContent: "string"
             },
-            handler(ctx){
-                return "update method";
+            async handler(ctx){
+                const landingPage = await this.adapter.findOne({id: ctx.params.id});
+                let object = {};
+                if(landingPage){
+                    object.headerScript = ctx.params.headerScript ? ctx.params.headerScript : landingPage.headerScript;
+                    object.bodyContent = ctx.params.bodyContent;
+                    object.updateAt = new Date();
+                    await this.adapter.updateById(ctx.params.id, {$set: object});
+                    return object;
+                }else{
+                    throw new MoleculerError("Item not found", 401, "NOT_FOUND");
+                }                
             }
         }
     },

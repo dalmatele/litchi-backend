@@ -112,6 +112,10 @@ module.exports = {
 
 			// Options to `server-static` module
 			options: {}
+		},
+		cors: {
+			origin: "*",
+			maxAge: 3600
 		}
 	},
 
