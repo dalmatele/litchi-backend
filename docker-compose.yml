@@ -1,0 +1,87 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    container_name: litchi-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: litchi
+    ports:
+      - 27017:27017
+    networks:
+      - internal
+  # adminer:
+  #   image: dockette/adminer
+  #   container_name: adminer-mongo
+  #   restart: always
+  #   ports:
+  #    - 8181:80
+  mongo-express:
+    image: mongo-express
+    restart: always
+    container_name: litchi-mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://root:password@litchi-mongo:27017/
+#      ME_CONFIG_MONGODB_SERVER: furion-mongo
+    networks:
+      - internal
+  api:
+    build:
+      context: .
+    image: litchi-backend
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    depends_on:
+      - nats
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-gw.rule=PathPrefix(`/`)"
+      - "traefik.http.services.api-gw.loadbalancer.server.port=3000"
+    networks:
+      - internal
+
+  landingpage:
+    build:
+      context: .
+    image: litchi-backend
+    env_file: docker-compose.env
+    environment:
+      SERVICES: landingpage      
+    depends_on:
+      - nats
+    networks:
+      - internal
+  nats:
+    image: nats:2
+    networks:
+      - internal
+
+  traefik:
+    image: traefik:v2.1
+    command:
+      - "--api.insecure=true" # Don't do that in production!
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - 3000:80
+      - 3001:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - internal
+      - default
+
+networks:
+  internal:
+
+volumes:
+  data:
