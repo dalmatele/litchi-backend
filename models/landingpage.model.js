@@ -9,6 +9,9 @@ let LandingPageSchema = new Schema({
     },
     bodyContent: {
         type: String
+    },
+    lpName: {
+        type: String
     }
 },{
     timestamps: true

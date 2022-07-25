@@ -13,6 +13,8 @@ services:
       - 27017:27017
     networks:
       - internal
+    volumes:
+      - mongo-data:/data/db
   # adminer:
   #   image: dockette/adminer
   #   container_name: adminer-mongo
@@ -84,4 +86,4 @@ networks:
   internal:
 
 volumes:
-  data:
+  mongo-data:
