@@ -48,7 +48,7 @@ module.exports = {
                 bodyContent: "string"
             },
             async handler(ctx){
-                const landingPage = await this.adapter.findOne({id: ctx.params.id});
+                const landingPage = await this.adapter.findOne({_id: ctx.params.id});                    
                 let object = {};
                 if(landingPage){
                     object.headerScript = ctx.params.headerScript ? ctx.params.headerScript : landingPage.headerScript;
