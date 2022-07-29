@@ -62,11 +62,25 @@ services:
       - nats
     networks:
       - internal
+    volumes:
+      - ./dockers/nginx_config/sites-available:/app/dockers/nginx_config/sites-available
+      - ./dockers/nginx_config/www:/app/dockers/nginx_config/www
   nats:
     image: nats:2
     networks:
       - internal
-
+  # https://hub.docker.com/_/nginx
+  nginx:
+    build:
+      dockerfile: nginx_dockerfile
+      context: ./dockers
+    volumes:
+      - ./nginx_config/templates:/etc/nginx/templates
+      - ./nginx_config/www:/usr/share/nginx/html
+    expose:
+      - 80
+    environment:
+      - NGINX_PORT=80
   traefik:
     image: traefik:v2.1
     command:

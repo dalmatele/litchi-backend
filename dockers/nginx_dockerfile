@@ -1,0 +1,8 @@
+FROM nginx
+
+COPY ./nginx_config/sites-available/ /etc/nginx/sites-available/
+WORKDIR /root
+COPY ./nginx.sh .
+RUN chmod +x nginx.sh
+RUN mkdir /etc/nginx/sites-enabled
+CMD ["./nginx.sh"]
