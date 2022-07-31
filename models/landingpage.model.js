@@ -12,6 +12,15 @@ let LandingPageSchema = new Schema({
     },
     lpName: {
         type: String
+    },
+    ownerId: {
+        type: String
+    },
+    domainId:{
+        type: String
+    },
+    isPublished: {
+        type: Boolean
     }
 },{
     timestamps: true
