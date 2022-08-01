@@ -16,8 +16,8 @@ module.exports = {
     settings: {},
     mixins: [DbService],
     adapter: new MongooseAdapter(process.env.MONGO_URI, {
-        user: "litchi",
-        password: "password",
+        user: process.env.MONGO_USER,
+        password: process.env.MONGO_PASSWORD,
         keepAlive: true
     }),
     model: LandingPage,
@@ -143,7 +143,7 @@ module.exports = {
                     throw new MoleculerError("Item not found", 401, "NOT_FOUND");
                 }
             }
-        }
+        },        
     },
     /**
 	 * Events

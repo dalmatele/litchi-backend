@@ -62,9 +62,30 @@ services:
       - nats
     networks:
       - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.landingpage.rule=Path("/landingpage")
     volumes:
       - ./dockers/nginx_config/sites-available:/app/dockers/nginx_config/sites-available
       - ./dockers/nginx_config/www:/app/dockers/nginx_config/www
+    expose:
+      - 3000
+  domain:
+    build:
+      context: .
+    image: litchi-backend
+    env_file: docker-compose.env
+    environment:
+      SERVICES: domain      
+    depends_on:
+      - nats
+    networks:
+      - internal
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.landingpage.rule=Path("/domain")
+    expose:
+      - 3000
   nats:
     image: nats:2
     networks:

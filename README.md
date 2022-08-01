@@ -40,6 +40,7 @@ In the terminal, try the following commands:
 - `npm test`: Run tests & generate coverage report
 - `npm run dc:up`: Start the stack with Docker Compose
 - `npm run dc:down`: Stop the stack with Docker Compose
+- `docker compose build service_name` and `docker compose up -d --no-deps service_name` to rebuild and start a service with new source code
 
 ## Notices:
 
